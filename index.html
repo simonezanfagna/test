@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link rel="stylesheet" href="public/css/carousel.css">
+    <title></title>
+  </head>
+  <body>
+    <header id="header-carousel" class="container-header">
+      <div class="icon">
+        <i class="far fa-lightbulb"></i>
+      </div>
+      <div class="text-header">
+        <h1 id="title"></h1>
+        <p id="subtitle"></p>
+      </div>
+
+    </header>
+    <div id="mc" class="my-carousel">
+      <div id="row">
+
+      </div>
+      <button id="btn-l" class="prev" onclick="showLeft(-1)">&lt;</button>
+      <button id="btn-r" class="next" onclick="showRight(+4)">&gt;</button>
+    </div>
+
+    <script type="text/javascript">
+      // classe che mi permette di costruire la struttura della card
+      class Carousel {
+        constructor(carousel) {
+          // aggiungo title e subtitle
+          document.getElementById('title').innerHTML = carousel['title'];
+          document.getElementById('subtitle').innerHTML = carousel['subtitle'];
+
+          // creo un container per il carousel
+          var container = document.getElementById('row');
+
+          // creo un container per la card
+          var card = document.createElement("div");
+          card.setAttribute('class','card-container');
+          container.appendChild(card);
+
+          // gestione della "cardinality" = "collection"
+          if (carousel.fetchCards()['cardinality'] == 'collection') {
+            // per fare l'effetto di collection creo due conatiner
+            // questo container, vuoto, serve per dare l' effetto di collection
+            var cardCollection2 = document.createElement("div");
+            cardCollection2.setAttribute('class','container-collection2');
+            card.appendChild(cardCollection2);
+
+            // questo conteinitore, sovrapposto al precedente, contiene le informazioni
+            var cardCollection = document.createElement("div");
+            cardCollection.setAttribute('class','container-collection');
+            card.appendChild(cardCollection);
+
+            // gestisco l' img
+            var img = document.createElement("img");
+            img.setAttribute('class', 'img-carousel');
+            cardCollection.appendChild(img);
+
+            // aggiungo un timeout per creare un ritardo di visualizzazione delle card
+            // questo ritardo mi permette di mostrare il card placeholders formato dalla img grigia
+            setTimeout(function (){
+
+              // associo ora il link dell' img
+              img.setAttribute('src', carousel.fetchCards()['image']);
+
+              // gestione titolo card
+              var h4 = document.createElement("h4")
+              h4.innerHTML = carousel.fetchCards()['title']
+              cardCollection.appendChild(h4);
+
+              // gestione del "type" della card
+              var type = document.createElement("span");
+              type.setAttribute('class', 'type')
+              type.innerHTML = carousel.fetchCards()['type'];
+              cardCollection.appendChild(type);
+
+              // gestione della durata con successiva conversione
+              var duration = document.createElement("span");
+              duration.setAttribute("class", 'duration');
+
+              // questa funzione converte la duration da secondi a minuti per poi arrivare alle ore
+              // formato : hh:mm se h > 0 es. 1h:20m
+              // formato mm:ss se h < 0 es. 20:15
+              function myTime(time) {
+                var hr = ~~(time / 3600);
+                var min = ~~((time % 3600) / 60);
+                var sec = time % 60;
+                var sec_min = "";
+                if (hr > 0) {
+                  sec_min += "" + hr + "h" + ":" + (min < 10 ? "0" : "");
+                  sec_min += "" + min + "m";
+                }
+                else {
+                  sec_min += "" + min + ":" + (sec < 10 ? "0" : "");
+                  sec_min += "" + sec;
+                }
+                return sec_min;
+              }
+
+              duration.innerHTML = myTime(carousel.fetchCards()['duration']);;
+              cardCollection.appendChild(duration);
+
+            }, 1000);
+
+          }
+          // se la card ha "cardinality" = "single"
+          else {
+            // il procedimento è lo stesso ovviamente senza la creazione dei due container
+            // infatti in questo caso i vari elemti della card vengono inseriti nella var card
+            var img = document.createElement("img");
+            img.setAttribute('class', 'img-carousel');
+            card.appendChild(img);
+
+            // aggiungo un timeout per creare un ritardo di visualizzazione delle card
+            // questo ritardo mi permette di mostrare il card placeholders formato dalla img grigia
+            setTimeout(function (){
+
+              img.setAttribute('src', carousel.fetchCards()['image']);
+
+              var h4 = document.createElement("h4")
+              h4.innerHTML = carousel.fetchCards()['title']
+              card.appendChild(h4);
+
+              var type = document.createElement("span");
+              type.setAttribute('class', 'type')
+              type.innerHTML = carousel.fetchCards()['type'];
+              card.appendChild(type);
+
+              var duration = document.createElement("span");
+              duration.setAttribute("class", 'duration');
+
+              // questa funzione converte la duration da secondi a minuti per poi arrivare alle ore
+              // formato : hh:mm se h > 0 es. 1h:20m
+              // formato mm:ss se h < 0 es. 20:15
+              function myTime(time) {
+                var hr = ~~(time / 3600);
+                var min = ~~((time % 3600) / 60);
+                var sec = time % 60;
+                var sec_min = "";
+                if (hr > 0) {
+                  sec_min += "" + hr + "h" + ":" + (min < 10 ? "0" : "");
+                  sec_min += "" + min + "m";
+                }
+                else {
+                  sec_min += "" + min + ":" + (sec < 10 ? "0" : "");
+                  sec_min += "" + sec;
+                }
+                return sec_min;
+              }
+              duration.innerHTML = myTime(carousel.fetchCards()['duration']);;
+              card.appendChild(duration);
+
+            }, 1000);
+          }
+
+
+
+        }
+      }
+
+      var options1 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.fotografiamoderna.it/wp-content/uploads/2017/12/Fotografie-paesaggi-consigli.jpg",
+            type : "elerning",
+            duration : 3600,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+      var options2 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.giovannilattanzi.it/wp-content/foto/2014/11/fotografare_paesaggi-600x450.jpg",
+            type : "elerning",
+            duration : 500,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+      var options3 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://image.nanopress.it/viaggi/fotogallery/780X0/68755/un-paesaggio-immerso-nel-verde.jpg",
+            type : "elerning",
+            duration : 4500,
+            title : "Welcome to effective time menagement",
+            cardinality : "collection"
+          };
+        }
+      }
+      var options4 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.napolitan.it/wp-content/uploads/2017/10/ssimg_235-1024x683.jpg",
+            type : "elerning",
+            duration : 1500,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+      var options5 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://images.lonelyplanetitalia.it/uploads/tra-terra-e-paradiso-nel-salar-de-uyuni-boliviacpa-10.jpg?q=80&p=slider&s=68e5f6a3b74cee4f1700e1dd7f0c5337",
+            type : "elerning",
+            duration : 200,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+      var options6 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.fotografiamoderna.it/wp-content/uploads/2017/12/Fotografie-paesaggi7.jpg",
+            type : "elerning",
+            duration : 1200,
+            title : "Welcome to effective time menagement",
+            cardinality : "collection"
+          };
+        }
+      }
+      var options7 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.diventaunfotografo.com/wp-content/uploads/2017/09/fotografare-paesaggi.jpg",
+            type : "elerning",
+            duration : 700,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+      var options8 = {
+        container : "my-carousel",
+        title : "Fresh and just uploaded content",
+        subtitle : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        fetchCards: function (chunkSize) {
+
+          return {
+            image : "https://www.turismo.it/typo3temp/pics/3e61c0183f.jpg",
+            type : "elerning",
+            duration : 5000,
+            title : "Welcome to effective time menagement",
+            cardinality : "single"
+          };
+        }
+      }
+
+      var card1 = new Carousel(options1);
+      var card2 = new Carousel(options2);
+      var card3 = new Carousel(options3);
+      var card4 = new Carousel(options4);
+      var card5 = new Carousel(options5);
+      var card6 = new Carousel(options6);
+      var card7 = new Carousel(options7);
+      var card8 = new Carousel(options8);
+
+    </script>
+    <script src="carousel.js" charset="utf-8"></script>
+  </body>
+</html>

@@ -1,0 +1,125 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  body{
+    background-color: slategray;
+    h1{
+      color: white;
+    }
+    h4{
+      padding: 5px;
+    }
+    p{
+      @extend h1;
+    }
+    span{
+      @extend h1;
+      background-color: grey;
+      display: inline-block;
+      &.type{
+        position: absolute;
+        left: 0;
+        top: 80px;
+        padding: 2px;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+      &.duration{
+        position: absolute;
+        right: 0;
+        top: 80px;
+        padding: 2px;
+        font-size: 12px;
+      }
+    }
+    .container-header{
+      margin: 100px auto 25px;
+      width: 950px;
+      display: flex;
+      .icon{
+        display: flex;
+        align-items: center;
+        background: white;
+        justify-content: center;
+        margin-right: 15px;
+        padding: 10px;
+        border-radius: 10px;
+        i{
+          font-size: 50px;
+          color: dodgerblue;
+        }
+      }
+      .text-header{
+
+      }
+    }
+    .my-carousel{
+      margin: auto;
+      width: 950px;
+      position: relative;
+      #row{
+        display: flex;
+        overflow: hidden;
+        position: relative;
+        height: 265px;
+        .card-container{
+          height: 250px;
+          width: 200px;
+          background-color: white;
+          position: relative;
+          margin-right: 50px;
+          -webkit-box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.43);
+          -moz-box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.43);
+          box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.43);
+          .img-carousel{
+            background-color: grey;
+            height: 100px;
+            width: 200px;
+            object-fit: cover;
+          }
+          .container-collection{
+            @extend .card-container;
+          }
+          .container-collection2{
+            width: 190px;
+            left: 5px;
+            @extend .card-container;
+            position: absolute;
+            top: 8px
+          }
+        }
+      }
+      button{
+        z-index: 10;
+        display: none;
+        font-size: 32px;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        background-color: rgba(222,222,222,0.6);
+        border: none;
+        width: 44px;
+        height: 250px;
+        &.prev {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        &.next {
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        &:hover{
+          background-color: rgb(222,222,222);
+        }
+        &.active{
+          display: flex;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
